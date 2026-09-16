@@ -1,0 +1,44 @@
+# OptAB default configuration
+# Hyperparameters were selected via Bayesian optimization (hypopt_enc.py / hypopt_dec.py).
+
+model:
+  hidden_channels: 17
+  hidden_states: 33
+  activation: tanh
+  num_depth: 15
+  output_channels: 4  # SOFA + creatinine + bilirubin + ALT
+  treatment_options: 3  # Vancomycin, Pip/Taz, Ceftriaxone
+  interpolation: linear
+  pred_comp: true
+  pred_act: tanh
+  pred_states: 128
+  pred_depth: 1
+
+training:
+  encoder:
+    lr: 0.00507
+    batch_size: 500
+    patience: 10
+    delta: 0.0001
+    max_epochs: 1000
+    weight_loss: true
+  decoder:
+    lr: 0.00507
+    batch_size: 1000
+    patience: 10
+    delta: 0.0001
+    max_epochs: 1000
+
+optimization:
+  horizon_hours: 48
+  decision_interval_hours: 24
+  # Contraindication thresholds (normalized — invert with mean/std before use)
+  creatinine_contraindication: null  # set based on clinical guidelines
+  bilirubin_contraindication: null
+  alt_contraindication: null
+
+data:
+  source: MIMIC-IV v2.2
+  max_hours: 72
+  train_test_split: 0.8
+  sepsis_definition: Sepsis-3 (SOFA >= 2 with suspected infection)
